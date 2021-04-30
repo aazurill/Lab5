@@ -5,6 +5,7 @@ let img = new Image(); // used to load image from <input> and draw to canvas
 
 // Grab the input of the "choose file" button and assign to img
 const imageUpload = document.getElementById('image-input');
+
 imageUpload.addEventListener('change', () => {
   let file = document.querySelector('input[type=file]').files[0];
   img = file;
