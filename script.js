@@ -1,13 +1,29 @@
 // script.js
+/* eslint-disable */
 
-const img = new Image(); // used to load image from <input> and draw to canvas
+let img = new Image(); // used to load image from <input> and draw to canvas
+
+// Grab the input of the "choose file" button and assign to img
+const imageUpload = document.getElementById('image-input');
+imageUpload.addEventListener('change', () => {
+  const canvas = document.getElementById('user-image');
+  let file = document.querySelector('input[type=file]').files[0];
+  img.src = file;
+});
+
 
 // Fires whenever the img object loads a new image (such as with img.src =)
 img.addEventListener('load', () => {
   // TODO
-
+  let canvas = document.getElementById('user-image');
+  console.log(canvas);
+  console.log('hello world');
   // Some helpful tips:
   // - Fill the whole Canvas with black first to add borders on non-square images, then draw on top
+  let ctx = canvas.getContext('2d');
+  ctx.fillStyle='black';
+
+
   // - Clear the form when a new image is selected
   // - If you draw the image to canvas here, it will update as soon as a new image is selected
 });
