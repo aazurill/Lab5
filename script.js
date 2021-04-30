@@ -8,17 +8,9 @@ const imageUpload = document.getElementById('image-input');
 
 imageUpload.addEventListener('change', () => {
   let file = document.querySelector('input[type=file]').files[0];
-  img = file;
-
-  // Code below makes the black background when you upload a file
-  const canvas = document.getElementById('user-image');
-  let ctx = canvas.getContext('2d');
-  ctx.fillStyle='black';
-  ctx.fillRect(0, 0, 400, 400);
-
-  // Unsure how to grab the data
-  canvas.style.background = img;
-});
+  let objURL = URL.createObjectURL(file);
+  img.src = objURL;
+ });
 // current issue that it needs to be img.src = for the event listener to run
 // but this causes error. NEED TOO FIGURE OUT HOW TO SET THE IMAGE AND UPLOAD IT TO
 // THE CANVAS
@@ -28,6 +20,18 @@ img.addEventListener('load', () => {
   // TODO
   // Some helpful tips:
   // - Fill the whole Canvas with black first to add borders on non-square images, then draw on top
+  const canvas = document.getElementById('user-image');
+  let ctx = canvas.getContext('2d');
+  ctx.fillStyle='black';
+  ctx.fillRect(0, 0, 400, 400);
+
+  let dimObj = getDimmensions(400, 400, img.width, img.height);
+  let locx = dimObj['startX'];
+  let locy = dimObj['startY'];
+  let iwidth = dimObj['width'];
+  let iheight = dimObj['height'];
+  ctx.drawImage(img, locx, locy, iwidth, iheight);
+
   // - Clear the form when a new image is selected
   // - If you draw the image to canvas here, it will update as soon as a new image is selected
 });
