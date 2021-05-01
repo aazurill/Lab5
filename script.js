@@ -1,26 +1,51 @@
 // script.js
 /* eslint-disable */
 
-let img = new Image(); // used to load image from <input> and draw to canvas
+const img = new Image(); // used to load image from <input> and draw to canvas
 
-// Grab the input of the "choose file" button and assign to img
 const imageUpload = document.getElementById('image-input');
 
+// Grabbing all the buttons
+const clear = document.querySelector('button[type=reset]');
+const readText = document.querySelector('button[type=button]');
+const voices = document.getElementById('voice-selection');
+const generate = document.querySelector('button[type=submit');
+
+const canvas = document.getElementById('user-image');
+// Listens for file upload
 imageUpload.addEventListener('change', () => {
   let file = document.querySelector('input[type=file]').files[0];
   let objURL = URL.createObjectURL(file);
   img.src = objURL;
  });
-// current issue that it needs to be img.src = for the event listener to run
-// but this causes error. NEED TOO FIGURE OUT HOW TO SET THE IMAGE AND UPLOAD IT TO
-// THE CANVAS
 
+// Listens for generate meme -> then takes top and bottom text and puts it on to the picture
+generate.addEventListener('click', (event) => {
+  event.preventDefault();
+  let topText = document.getElementById('text-top').value;
+  let botText = document.getElementById('text-bottom').value;
+
+
+  // Drawing the text onto the canvas
+  let ctx = canvas.getContext('2d');
+  ctx.font = "30px Arial";
+  ctx.fillStyle="#ffffff";
+  ctx.textAlign= 'center';
+  ctx.fillText(topText, 200, 50);
+  ctx.fillText(botText, 200, 350);
+
+  //Toggle the clear and read text buttons
+  clear.disabled = false;
+  readText.disabled = false;
+});
 // Fires whenever the img object loads a new image (such as with img.src =)
 img.addEventListener('load', () => {
+  clear.disabled = true;
+  readText.disabled = true;
+  voices.disabled = true;
   // TODO
   // Some helpful tips:
   // - Fill the whole Canvas with black first to add borders on non-square images, then draw on top
-  const canvas = document.getElementById('user-image');
   let ctx = canvas.getContext('2d');
   ctx.fillStyle='black';
   ctx.fillRect(0, 0, 400, 400);
@@ -33,6 +58,8 @@ img.addEventListener('load', () => {
   ctx.drawImage(img, locx, locy, iwidth, iheight);
 
   // - Clear the form when a new image is selected
+  document.getElementById('text-top').value = '';
+  document.getElementById('text-bottom').value = '';
   // - If you draw the image to canvas here, it will update as soon as a new image is selected
 });
 
