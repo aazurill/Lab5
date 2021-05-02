@@ -24,11 +24,15 @@ const synth = window.speechSynthesis;
 // Create variable for keeping track of volume
 var volume = 100;
 
+// Create variable for tracking if image was uploaded or not
+var imgUploaded = false;
+
 // Listens for file upload
 imageUpload.addEventListener('change', () => {
   let file = document.querySelector('input[type=file]').files[0];
   let objURL = URL.createObjectURL(file);
   img.src = objURL;
+  imgUploaded = true;
  });
 
 // Listens for generate meme -> then takes top and bottom text and puts it on to the picture
@@ -37,9 +41,24 @@ generate.addEventListener('click', (event) => {
   let topText = document.getElementById('text-top').value;
   let botText = document.getElementById('text-bottom').value;
 
-
-  // Drawing the text onto the canvas
+  // Clearing canvas to remove previous text
   let ctx = canvas.getContext('2d');
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  // If there is an image uploaded, draw image/black background
+  if(imgUploaded == true) {
+    ctx.fillStyle='black';
+    ctx.fillRect(0, 0, 400, 400);
+
+    let dimObj = getDimmensions(400, 400, img.width, img.height);
+    let locx = dimObj['startX'];
+    let locy = dimObj['startY'];
+    let iwidth = dimObj['width'];
+    let iheight = dimObj['height'];
+    ctx.drawImage(img, locx, locy, iwidth, iheight);
+  }
+
+  // Draw new text
   ctx.font = "30px Arial";
   ctx.fillStyle="#ffffff";
   ctx.textAlign= 'center';
@@ -50,11 +69,13 @@ generate.addEventListener('click', (event) => {
   clear.disabled = false;
   readText.disabled = false;
 });
+
 // Fires whenever the img object loads a new image (such as with img.src =)
 img.addEventListener('load', () => {
   clear.disabled = true;
   readText.disabled = true;
-  voices.disabled = true;
+  imgUploaded = true;
+
   // TODO
   // Some helpful tips:
   // - Fill the whole Canvas with black first to add borders on non-square images, then draw on top
@@ -94,9 +115,11 @@ slider.onchange = function() {
 // Listens for clear -> clears image/text/input and toggles buttons
 clear.addEventListener('click', () => {
 
-  // Remove image and text from Canvas
+  // Clear canvas
   let ctx = canvas.getContext('2d');
   ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  imgUploaded = false;
 
   // Toggle clear and read text buttons
   clear.disabled = true;
@@ -117,16 +140,22 @@ readText.addEventListener('click', () => {
   let topTextVoice = new SpeechSynthesisUtterance(document.getElementById('text-top').value);
 
   // Change voice
-  botTextVoice.voice = voices.getAttribute('lang');
-  topTextVoice.voice = voices.getAttribute('lang');
+  let voiceList = speechSynthesis.getVoices();
+  let selectedVoice = voices.selectedOptions[0].getAttribute('name');
+  for(var i = 0; i < voiceList.length ; i++) {
+    if(voiceList[i].name === selectedVoice) {
+      botTextVoice.voice = voiceList[i];
+      topTextVoice.voice = voiceList[i];
+    }
+  }
 
   // Change volume
   botTextVoice.volume = volume / 100;
   topTextVoice.volume = volume / 100;
 
   // Speak utterances
-  synth.speak(botTextVoice);
   synth.speak(topTextVoice);
+  synth.speak(botTextVoice);
 });
 
 /**
@@ -169,6 +198,7 @@ function getDimmensions(canvasWidth, canvasHeight, imageWidth, imageHeight) {
   return { 'width': width, 'height': height, 'startX': startX, 'startY': startY }
 }
 
+// Function for adding voices to dropdown
 function addVoices() {
   // get list of voices
   var voiceList = speechSynthesis.getVoices();
