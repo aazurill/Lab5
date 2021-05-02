@@ -9,4 +9,4 @@ https://aazurill.github.io/Lab5/
 
 ## Part 2:
 
-https://github.com/aazurill/github-actions-for-ci
+https://github.com/aazurill/github-actions-for-ci/issues
