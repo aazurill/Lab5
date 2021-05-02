@@ -30,12 +30,11 @@
           <button type="reset" disabled>Clear</button>
           <button type="button" disabled>Read Text</button>
         </div>
-        <select name="voices" id="voice-selection" disabled>
-          <option value="none" selected>No available voice options.</option>
+        <select name="voices" id="voice-selection" enabled>
         </select>
         <div id="volume-group">
-          <img src="icons/volume-level-3.svg" alt="Volume Level 3">
-          <input type="range" min=0 max=100 value=100>
+          <img id="volume-img" src="icons/volume-level-3.svg" alt="Volume Level 3">
+          <input id="volume-slider" type="range" min=0 max=100 value=100>
         </div>
       </form>
     </main>
